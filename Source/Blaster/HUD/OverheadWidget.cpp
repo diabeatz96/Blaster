@@ -13,7 +13,7 @@ void UOverheadWidget::SetDisplayText(FString Role, FString Name)
 
 void UOverheadWidget::ShowPlayerOverHead(APawn* InPawn)
 {
-	ENetRole RemoteRole = InPawn->GetLocalRole();
+	ENetRole RemoteRole = InPawn->GetRemoteRole();
 	FString Role;
 	switch(RemoteRole)
 	{
