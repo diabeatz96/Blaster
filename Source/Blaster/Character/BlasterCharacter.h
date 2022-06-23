@@ -11,6 +11,11 @@
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter
 {
+
+	
+public:
+
+private:
 	GENERATED_BODY()
 
 public:
@@ -18,13 +23,15 @@ public:
 	ABlasterCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
+	
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent *CameraBoom;
 
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* OverheadWidget;
 	
 protected:
 	// Called when the game starts or when spawned

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/HUD/OverheadWidget.h"
 #include "GameFramework/GameMode.h"
 #include "LobbyGameMode.generated.h"
 
@@ -15,5 +16,4 @@ class BLASTER_API ALobbyGameMode : public AGameMode
 	GENERATED_BODY()
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-	
 };
