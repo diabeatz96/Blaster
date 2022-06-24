@@ -39,6 +39,7 @@ void AWeapon::BeginPlay()
 		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereOverlap);
+		AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AWeapon::OnSphereEndOverlap);
 	}
 	
 	if (PickupWidget)
@@ -47,20 +48,59 @@ void AWeapon::BeginPlay()
 	}
 }
 
-void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult&)
-{
-	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-
-	if (BlasterCharacter && PickupWidget)
-	{
-		PickupWidget->SetVisibility(true);
-	}
-}
 
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
+
+void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult&)
+{
+	if (WeaponState == EWeaponState::EWS_Equipped) { return; }
+
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
+
+	if (BlasterCharacter && PickupWidget)
+	{
+		BlasterCharacter->SetOverlappingWeapon(this);
+	}
+}
+
+void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (WeaponState == EWeaponState::EWS_Equipped) { return; }
+	
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
+
+	if (BlasterCharacter)
+	{
+		BlasterCharacter->SetOverlappingWeapon(nullptr);
+	}
+}
+
+bool AWeapon::IsWidgetVisible()
+{
+	if(PickupWidget)
+	{
+		bool WidgetVisible = PickupWidget->GetVisibleFlag() ? true : false;
+		return WidgetVisible;
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("FAILED"))
+	return false;
+	
+}
+
+
+void AWeapon::ShowPickupWidget(bool bShowWidget)
+{
+	if (PickupWidget)
+	{
+		PickupWidget->SetVisibility(bShowWidget);
+	}
+}
+
+
 

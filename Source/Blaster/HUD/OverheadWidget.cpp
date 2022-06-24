@@ -33,10 +33,15 @@ void UOverheadWidget::ShowPlayerOverHead(APawn* InPawn)
 	
 	FString RemoteRoleString = FString::Printf(TEXT("Local Role: %s"), *Role);
 
-	FString PlayerName = InPawn->GetPlayerState()->GetPlayerName();
+	if(InPawn)
+	{
+		SetDisplayText(RemoteRoleString, "InPawnExists");
+	} else
+	{
+		SetDisplayText(RemoteRoleString, "Name Not Found");
 
-	SetDisplayText(RemoteRoleString, PlayerName);
-
+	}
+	
 }
 
 

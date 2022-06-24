@@ -23,6 +23,8 @@ public:
 	ABlasterCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -32,6 +34,15 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
+
+	UPROPERTY(ReplicatedUsing= OnRep_OverlappingWeapon)
+	class AWeapon* OverlappingWeapon;
+
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
+
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* Combat;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -41,8 +52,11 @@ protected:
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
-
-public:
+	void EquipButtonPressed();
 	
 
+public:
+
+	void SetOverlappingWeapon(AWeapon* Weapon);
+	
 };
