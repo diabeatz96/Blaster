@@ -63,6 +63,15 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 	}
 }
 
+void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
+{
+	if(Combat)
+	{
+		UE_LOG(LogTemp, Warning, (TEXT("CLICKING E")))
+		Combat->EquipWeapon(OverlappingWeapon);
+	}
+}
+
 // Called when the game starts or when spawned
 void ABlasterCharacter::BeginPlay()
 {
@@ -132,14 +141,17 @@ void ABlasterCharacter::LookUp(float Value)
 
 void ABlasterCharacter::EquipButtonPressed()
 {
-	if(Combat && HasAuthority())
+	if(Combat)
 	{
-		UE_LOG(LogTemp, Warning, (TEXT("CLICKING E")))
-		Combat->EquipWeapon(OverlappingWeapon);
-	} else
-	{
-		UE_LOG(LogTemp, Warning, (TEXT("No Authority :(")))
-
+		if(HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, (TEXT("CLICKING E")))
+			Combat->EquipWeapon(OverlappingWeapon);
+		}  else
+		{
+			UE_LOG(LogTemp, Warning, (TEXT("No Authority, Sending RPC")))
+			ServerEquipButtonPressed();
+		}
 	}
 }
 
