@@ -25,7 +25,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
-	
+
+	FORCEINLINE float GetAO_YAW() const { return AO_Yaw; } 
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent *CameraBoom;
@@ -46,6 +50,7 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -59,7 +64,9 @@ protected:
 	void CrouchButtonPressed();
 	void AimButtonPressed();
 	void AimButtonReleased();
-
+	
+	UFUNCTION()
+	void AimOffset(float DeltaTime);
 	
 
 public:
@@ -67,4 +74,8 @@ public:
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped();
 	bool IsAiming();
+	
+    float AO_Yaw;
+    float AO_Pitch;
+    FRotator StartingAimRotation;
 };

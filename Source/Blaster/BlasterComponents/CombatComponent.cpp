@@ -80,11 +80,6 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
 
-	if(GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, TEXT("Equipp Called"));
-	}
-	
 	if (Character == nullptr || WeaponToEquip == nullptr)
 	{
 		if(GEngine)
@@ -96,8 +91,6 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-
-	UE_LOG(LogTemp, Warning, TEXT("Weapon Equip: %d "), EquippedWeapon->IsWidgetVisible());
 
 	const USkeletalMeshSocket* HandSocket = Character->GetMesh()->GetSocketByName(FName("HandRightSocket"));
 	if(HandSocket)
@@ -112,8 +105,6 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		
 	EquippedWeapon->SetOwner(Character);
 	EquippedWeapon->SeteWidgetHidden(true);
-
-	UE_LOG(LogTemp, Warning, TEXT("Weapon Equip: %d "), EquippedWeapon->IsWidgetVisible());
 
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	Character->bUseControllerRotationYaw = true;
