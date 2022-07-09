@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "BlasterCharacter.generated.h"
 
+class AWeapon;
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter
 {
@@ -28,6 +29,7 @@ public:
 
 	FORCEINLINE float GetAO_YAW() const { return AO_Yaw; } 
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	AWeapon* GetEquippedWeapon();
 
 
 private:

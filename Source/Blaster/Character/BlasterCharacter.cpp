@@ -57,6 +57,12 @@ void ABlasterCharacter::PostInitializeComponents()
 	}
 }
 
+AWeapon* ABlasterCharacter::GetEquippedWeapon()
+{
+	if(Combat == nullptr) return nullptr;
+	return Combat->EquippedWeapon;
+}
+
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
