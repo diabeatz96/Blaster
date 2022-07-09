@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -80,4 +81,9 @@ public:
     float AO_Yaw;
     float AO_Pitch;
     FRotator StartingAimRotation;
+
+	ETurningInPlace TurningInPlace;
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const {return TurningInPlace;}
+	void TurnInPlace(float DeltaTime);
+	
 };
