@@ -31,6 +31,10 @@ protected:
 	void OnRep_EquippedWeapon();
 
 	void FireButtonPressed(bool bPressed);
+
+	UFUNCTION(Server, Reliable)
+	void ServerFire();
+	
 private:
 
 	ABlasterCharacter* Character;
@@ -48,6 +52,9 @@ private:
 	float AimWalkSpeed;
 
 	bool bFireButtonPressed;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFire();
 
 public:
 	
