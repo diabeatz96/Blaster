@@ -65,6 +65,20 @@ AWeapon* ABlasterCharacter::GetEquippedWeapon()
 	return Combat->EquippedWeapon;
 }
 
+void ABlasterCharacter::PlayFireMontage(bool bAiming)
+{
+	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+		FName SectionName;
+		SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
@@ -102,11 +116,6 @@ void ABlasterCharacter::Tick(float DeltaTime)
 	
 	AimOffset(DeltaTime);
 	
-		if(GEngine) {
-    		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Blue, FString::Printf(TEXT("OffsetYaw: %f"), AO_Yaw));
-    		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Blue, FString::Printf(TEXT("OffsetPitch: %f"), AO_Pitch));
-    		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Blue, FString::Printf(TEXT("BaseAnimationYaw: %f"), GetBaseAimRotation().Yaw));
-    	}
 }
 
 // Called to bind functionality to input
@@ -119,6 +128,8 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ABlasterCharacter::CrouchButtonPressed);
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ABlasterCharacter::AimButtonPressed);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ABlasterCharacter::AimButtonReleased);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABlasterCharacter::FireButtonPressed);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ABlasterCharacter::FireButtonReleased);
 
 
 	
@@ -206,6 +217,22 @@ void ABlasterCharacter::AimButtonReleased()
 	}
 }
 
+void ABlasterCharacter::FireButtonPressed()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+}
+
+void ABlasterCharacter::FireButtonReleased()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+}
+
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
 	if (Combat && Combat->EquippedWeapon == nullptr) {
@@ -277,7 +304,6 @@ bool ABlasterCharacter::IsAiming()
 
 void ABlasterCharacter::TurnInPlace(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AO_Yaw: %f"), AO_Yaw)
 	if(AO_Yaw > 60.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Right;

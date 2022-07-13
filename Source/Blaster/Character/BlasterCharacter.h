@@ -31,6 +31,8 @@ public:
 	FORCEINLINE float GetAO_YAW() const { return AO_Yaw; } 
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	AWeapon* GetEquippedWeapon();
+	void PlayFireMontage(bool bAiming);
+	
 
 
 private:
@@ -67,6 +69,9 @@ protected:
 	void CrouchButtonPressed();
 	void AimButtonPressed();
 	void AimButtonReleased();
+	void FireButtonPressed();
+	void FireButtonReleased();
+	
 	
 	UFUNCTION()
 	void AimOffset(float DeltaTime);
@@ -86,5 +91,10 @@ public:
 	ETurningInPlace TurningInPlace;
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const {return TurningInPlace;}
 	void TurnInPlace(float DeltaTime);
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	class UAnimMontage* FireWeaponMontage;
+
+	
 	
 };
