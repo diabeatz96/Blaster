@@ -32,8 +32,12 @@ public:
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	AWeapon* GetEquippedWeapon();
 	void PlayFireMontage(bool bAiming);
-	
+	void FastFly();
 
+	UPROPERTY(EditAnywhere)
+	bool bFastFlying; 
+	
+	FORCEINLINE bool GetFastFlying() const {return bFastFlying;}
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)

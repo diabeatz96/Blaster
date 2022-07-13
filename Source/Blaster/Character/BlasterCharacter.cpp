@@ -41,6 +41,7 @@ ABlasterCharacter::ABlasterCharacter()
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 	NetUpdateFrequency = 66.f;
 	MinNetUpdateFrequency = 33.f;
+	bFastFlying = false; 
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -76,6 +77,19 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 		FName SectionName;
 		SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
 		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+void ABlasterCharacter::FastFly()
+{
+	bFastFlying = !bFastFlying;
+	if(bFastFlying)
+	{
+		GetCharacterMovement()->MaxFlySpeed = 2000.f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxFlySpeed = 650.f;
 	}
 }
 
@@ -124,6 +138,9 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Fly", IE_Pressed, this, &ACharacter::ClientCheatFly);
+	PlayerInputComponent->BindAction("Fly", IE_DoubleClick, this, &ABlasterCharacter::FastFly);
+	PlayerInputComponent->BindAction("DisableFly", IE_Pressed, this, &ACharacter::ClientCheatWalk);
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABlasterCharacter::EquipButtonPressed);
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ABlasterCharacter::CrouchButtonPressed);
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ABlasterCharacter::AimButtonPressed);
@@ -145,11 +162,21 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void ABlasterCharacter::MoveForward(float Value)
 {
-	if( Controller != nullptr && Value != 0.f)
+	if(GetCharacterMovement()->IsFlying())
 	{
-		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		bUseControllerRotationPitch = true;
+		bUseControllerRotationRoll = true;
+		const FRotator YawRotation(Controller->GetControlRotation().Pitch, Controller->GetControlRotation().Yaw, 0.f);
 		const FVector Direction( FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
 		AddMovementInput(Direction, Value);
+	} 
+	else if( Controller != nullptr && Value != 0.f)
+	{
+		bUseControllerRotationPitch = false;
+		bUseControllerRotationRoll = false;
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+		const FVector Direction( FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
+		AddMovementInput(Direction, Value * 3);
 	} 
 }
 
@@ -243,7 +270,7 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
 	Velocity.Z = 0.f;
 	float Speed = Velocity.Size();
 	bool bIsInAir = GetCharacterMovement()->IsFalling();
-
+	
 	if (Speed == 0.f && !bIsInAir) // standing still, not jumping
 		{
 		
