@@ -59,6 +59,8 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire();
 
+	FVector HitTarget;
+
 public:
 	
 
