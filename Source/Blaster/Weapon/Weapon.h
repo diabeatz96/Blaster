@@ -30,6 +30,22 @@ public:
 	bool IsWidgetVisible();
 	virtual void Fire(const FVector& HitTarget);
 
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsCenter;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsLeft;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsRight;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsTop;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsBottom;
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -61,6 +77,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ACasing> CasingClass;
 
+	/*
+	 * Textures for the weapon crosshairs
+	 */
+
+
+	
 public:	
 	
 	void SetWeaponState(EWeaponState State);
